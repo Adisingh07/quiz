@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 50px;
+}
+
+.container {
+    width: 300px;
+    margin: auto;
+}
+
+button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    cursor: pointer;
+}
+
+input {
+    display: block;
+    width: 90%;
+    margin: 10px auto;
+    padding: 5px;
+}
+
+#options button {
+    display: block;
+    width: 90%;
+    margin: 5px auto;
+    padding: 10px;
+}
+
+.correct {
+    background-color: lightgreen;
+}
+
+.wrong {
+    background-color: salmon;
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Quiz App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="Quiz1/quiz.html">Add Word</a>
+        <h2>Word Quiz App</h2>
+        <button onclick="window.location.href='Add Word/index.html'">Add Word</button>
+        <button onclick="window.location.href='Quiz1/quiz.html'">Quiz</button>
+        <div id="quizSection" style="display: none;">
+            <p id="question"></p>
+            <div id="options"></div>
+            <button onclick="nextQuestion()" id="nextBtn" style="display: none;">Next</button>
+        </div>
+    </div>
+     <!-- <script type="module">
+           // Import the functions you need from the SDKs you need
+           import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+            import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+  
+                 // ✅ Firebase Config (Apne Firebase Console se API keys replace karein)
+         const firebaseConfig = {
+             apiKey: "AIzaSyAAUg8l34-ki_lKc64_zfGB7yVwvCunAKM",
+             authDomain: "qiuz-47c3f.firebaseapp.com",
+             databaseURL: "https://qiuz-47c3f-default-rtdb.firebaseio.com/",
+             projectId: "qiuz-47c3f",
+             storageBucket: "qiuz-47c3f.firebasestorage.app",
+             messagingSenderId: "371167551976",
+             appId: "1:371167551976:web:4e09bd7f3408f08a41045d",
+            
+         };
+         
+         // ✅ Firebase Initialize
+         const app = initializeApp(firebaseConfig);
+         
+       
+         
+        //  // ✅ Fetch Words from Firebase Firestore
+        //  let words = [];
+        //  function fetchWords() {
+        //      db.collection("words").get().then(snapshot => {
+        //          words = snapshot.docs.map(doc => doc.data());
+        //          startQuiz();
+        //      }).catch(error => console.error("Error fetching words: ", error));
+        //  }
+         
+        // Data fetch karne ka function
+        async function fetchWords() {
+            const wordsRef = ref(db, "user"); // "user" node fetch karein
+            const snapshot = await get(wordsRef);
+        
+            if (snapshot.exists()) {
+                const wordsData = snapshot.val();
+        
+                // 🔹 Debugging: JSON format me check karein
+                console.log("Raw Firebase Data:", JSON.stringify(wordsData, null, 2));
+        
+                // 🔹 Loop Laga Kar Data Print Karein
+                for (let key in wordsData) {
+                    console.log("📌 Word:", wordsData[key].Word);
+                    console.log("📖 Meaning:", wordsData[key].Meaning);
+                }
+        
+                // 🔹 Array Format Me Convert Karein
+                const formattedWords = Object.values(wordsData);
+                console.log("✅ Converted Array Format:", formattedWords);
+        
+                // 🔹 Quiz Generate Karne Ke Liye Function Call Karein
+                generateQuiz(formattedWords);
+            } else {
+                console.log("❌ No Data in Firebase!");
+            }
+        }
+        // ✅ Function Ko Call Karein
+        fetchWords();
+
+         // ✅ Start Quiz Function
+         function startQuiz() {
+             if (words.length < 4) {
+                 alert("❌ Please add at least 4 words to start the quiz.");
+                 return;
+             }
+             
+             document.getElementById("quizSection").style.display = "block";
+             document.getElementById("addForm").style.display = "none";
+             nextQuestion();
+         }
+         
+         // ✅ Generate Next Quiz Question
+         function nextQuestion() {
+             document.getElementById("nextBtn").style.display = "none";
+             let quizOptions = [...words];
+         
+             let currentWordIndex = Math.floor(Math.random() * quizOptions.length);
+             let correctWord = quizOptions[currentWordIndex];
+         
+             quizOptions = quizOptions.filter(w => w.word !== correctWord.word);
+             let randomOptions = quizOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+             randomOptions.push(correctWord);
+             randomOptions = randomOptions.sort(() => 0.5 - Math.random());
+         
+             document.getElementById("question").innerText = `What is the meaning of "${correctWord.word}"?`;
+             let optionsDiv = document.getElementById("options");
+             optionsDiv.innerHTML = "";
+         
+             randomOptions.forEach(option => {
+                 let btn = document.createElement("button");
+                 btn.innerText = option.meaning;
+                 btn.onclick = () => checkAnswer(btn, option.meaning === correctWord.meaning, correctWord.meaning);
+                 optionsDiv.appendChild(btn);
+             });
+         }
+         
+         // ✅ Check Answer and Show Correct Option
+         function checkAnswer(button, isCorrect, correctMeaning) {
+             let allButtons = document.querySelectorAll("#options button");
+             allButtons.forEach(btn => {
+                 btn.disabled = true;
+                 if (btn.innerText === correctMeaning) {
+                     btn.classList.add("correct"); // ✅ Sahi jawab GREEN hoga
+                 }
+             });
+         
+             if (!isCorrect) {
+                 button.classList.add("wrong"); // ❌ Galat jawab RED hoga
+             }
+         
+             document.getElementById("nextBtn").style.display = "block"; // "Next" button dikhai dega
+         }
+         
+         // ✅ Auto Fetch Words on Page Load
+         document.addEventListener("DOMContentLoaded", fetchWords);
+         
+    </script> -->
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    <script type="module" src="script.js"></script>
+    
+</body>
+</html>
