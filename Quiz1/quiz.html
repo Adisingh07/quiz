@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Meaning Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .quiz-container h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      margin: 20px 0;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9fafb;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .options button:hover {
+      background-color: #e5e7eb;
+    }
+
+    .options button.correct {
+      background-color: #d1fae5;
+      border-color: #10b981;
+    }
+
+    .options button.wrong {
+      background-color: #fee2e2;
+      border-color: #ef4444;
+    }
+
+    .next-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      background-color: #3b82f6;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .next-button:hover {
+      background-color: #2563eb;
+    }
+
+    .correct-answer {
+      color: #ef4444;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Word Meaning Quiz</h1>
+    <div id="quiz-content">
+      <button id="start-button" class="next-button">Start Quiz</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAUg8l34-ki_lKc64_zfGB7yVwvCunAKM",
+      authDomain: "qiuz-47c3f.firebaseapp.com",
+      databaseURL: "https://qiuz-47c3f-default-rtdb.firebaseio.com/",
+      projectId: "qiuz-47c3f",
+      storageBucket: "qiuz-47c3f.appspot.com",
+      messagingSenderId: "371167551976",
+      appId: "1:371167551976:web:4e09bd7f3408f08a41045d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const quizContent = document.getElementById("quiz-content");
+
+    const fetchRandomWord = async () => {
+      const wordsRef = ref(database, "user");
+      const snapshot = await get(wordsRef);
+
+      if (snapshot.exists()) {
+        const words = snapshot.val();
+        const wordKeys = Object.keys(words);
+        const randomKey = wordKeys[Math.floor(Math.random() * wordKeys.length)];
+        const randomWord = words[randomKey];
+
+        const allMeanings = wordKeys.map((key) => words[key].Meaning);
+        const incorrectOptions = allMeanings
+          .filter((meaning) => meaning !== randomWord.Meaning)
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 3);
+
+        const shuffledOptions = [...incorrectOptions, randomWord.Meaning].sort(() => 0.5 - Math.random());
+
+        displayQuestion(randomWord.Word, shuffledOptions, randomWord.Meaning);
+      }
+    };
+
+    const displayQuestion = (word, options, correctAnswer) => {
+      quizContent.innerHTML = `
+        <h2>What is the meaning of "${word}"?</h2>
+        <div class="options">
+          ${options
+            .map(
+              (option, index) => `
+                <button class="option-button" data-index="${index}" data-answer="${option}">${option}</button>
+              `
+            )
+            .join("")}
+        </div>
+        <p class="correct-answer" id="correct-answer" style="display: none;">Correct Answer: ${correctAnswer}</p>
+        <button class="next-button" id="next-button" style="display: none;">Next</button>
+      `;
+
+      document.querySelectorAll(".option-button").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          const selectedAnswer = e.target.getAttribute("data-answer");
+          if (selectedAnswer === correctAnswer) {
+            e.target.classList.add("correct");
+          } else {
+            e.target.classList.add("wrong");
+          }
+          document.getElementById("correct-answer").style.display = "block";
+          document.getElementById("next-button").style.display = "inline-block";
+          document.querySelectorAll(".option-button").forEach((btn) => {
+            btn.disabled = true;
+          });
+        });
+      });
+
+      document.getElementById("next-button").addEventListener("click", () => {
+        fetchRandomWord();
+      });
+    };
+
+    document.getElementById("start-button").addEventListener("click", () => {
+      fetchRandomWord();
+    });
+  </script>
+</body>
+</html>
